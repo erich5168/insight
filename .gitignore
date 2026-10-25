@@ -6,6 +6,9 @@ __pycache__/
 # Folder
 *.DS_Store
 
+# Project Specific (Sensitive data lives here)
+*.data
+
 # C extensions
 *.so
 
