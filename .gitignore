@@ -7,7 +7,7 @@ __pycache__/
 *.DS_Store
 
 # Project Specific (Sensitive data lives here)
-*.data/
+.data/
 
 # C extensions
 *.so
