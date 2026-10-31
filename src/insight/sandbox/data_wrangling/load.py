@@ -16,7 +16,7 @@ DATA_FOLDER = PROJECT_ROOT / "data" / "processed"
 FILE_BAL = DATA_FOLDER / "2024Q1_balance.xlsx"
 FILE_INC = DATA_FOLDER / "2024q1_income.xlsx"
 
-def load_income_statement(file_name):
+def load_income_statement(file_name) -> pd.DataFrame:
     
     target_path = DATA_FOLDER / file_name
     print(target_path)
@@ -26,13 +26,20 @@ def load_income_statement(file_name):
         raise FileNotFoundError(f"Critical Error: Could not find {file_name} at {target_path}")
     print(f"Found file :{target_path}")
     
-    return pd.read_excel(target_path)
+    df = pd.read_excel(
+        target_path,
+        skiprows=1,        # Skip "Table 1"
+        index_col=0        # Set "English Description" as the index
+        )
     
+    return df
 
 
 # --- Execution ----
 try:
     df = load_income_statement("2024q1_income.xlsx")
-    print(df.head())
+    print(df.head(10))
+    print(df.dtypes)
+    print(df.isna().sum())
 except Exception as e:
     print(e)

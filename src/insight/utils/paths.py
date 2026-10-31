@@ -9,16 +9,18 @@ from pathlib import Path
 
 def get_project_root() -> Path:
     
+    # 1. Find current file path
     current_file = Path(__file__).resolve()
-    print(f"Get current file path {current_file}")
     
+    #2. Loop through `current_file.parents`
     for parent in current_file.parents:
-        print(f"loop: {parent}")
+        
+        # Each parent folder check if there is "pyuproject.toml"
         if Path(parent / "pyproject.toml").exists():
             print(f"Found pyproject.toml in {parent}")
             return parent
     
     raise FileNotFoundError("Could not find project root(pyproject.toml missing)")
     
-root = get_project_root()
-print(f"This is the Root: {root}")
+# root = get_project_root()
+# print(f"This is the Root: {root}")
