@@ -16,6 +16,16 @@ DATA_FOLDER = PROJECT_ROOT / "data" / "processed"
 FILE_BAL = DATA_FOLDER / "2024Q1_balance.xlsx"
 FILE_INC = DATA_FOLDER / "2024q1_income.xlsx"
 
+
+# 4. Define Mapping : Business Key -> List of possible label
+METRIC_MAP = {
+        'total_revenue': ['Total Operating Revenue', 'Revenue', 'Net Sales'],
+        'total_opt_cost': ['Total Operating Costs', 'Operating Cost'],
+        'gross_profit':   ['Gross Profit', 'Total Gross Profit'],
+        'total_opt_exp':  ['Total Operating Expenses', 'Operating Expense']
+    }
+
+
 def load_income_statement(file_name) -> pd.DataFrame:
     
     target_path = DATA_FOLDER / file_name
@@ -34,6 +44,12 @@ def load_income_statement(file_name) -> pd.DataFrame:
     
     return df
 
+
+def find_value(df, metric_map) -> float:
+    for name in metric_map:
+        if name in df.index:
+            return float(df.loc[name, "Actual Amount"])
+    return 0.0
 
 
 # 1. Leverage & Solvency
@@ -54,12 +70,7 @@ def load_income_statement(file_name) -> pd.DataFrame:
 # Cash + Cash Equivalents / 
 # ( Quarter Operating Expenses / 3)
 
-def extract_metic():
-    try:
-        df = load_income_statement("2024q1_income.xlsx")
-        
-    except Exception as e:
-        print(e)
+def extract_metic(df):
         
     metrics = {}
     
@@ -68,15 +79,10 @@ def extract_metic():
     
     
     # 2. Extract & simple math
-    total_revenue = df.loc["Total Operating Revenue", "Actual Amount"]
-    total_opt_cost = df.loc["Total Operating Costs" , "Actual Amount"]
-    # For somereason "Gross Profit" number is returning datatype `timnedelta64` suggest cell is formatted as "Time Duration"
-    # Use float() to convert the datatype
-    gross_profit = float(df.loc["Gross Profit", "Actual Amount"])      
-    total_opt_expense = df.loc["Total Operating Expenses", "Actual Amount"]
-    
-    metrics = {k: float(v) for k, v in metrics.items()}
-    
+    total_revenue = find_value(df, METRIC_MAP['total_revenue'])
+    total_opt_cost = find_value(df, METRIC_MAP['total_opt_cost'])
+    gross_profit = find_value(df, METRIC_MAP['gross_profit'])
+    total_opt_expense = find_value(df, METRIC_MAP['total_opt_exp'])
     opt_income = gross_profit - total_opt_expense
     
     metrics['total_revenue'] = total_revenue
@@ -85,25 +91,21 @@ def extract_metic():
     metrics['total_opt_expense'] = total_opt_expense
     metrics['opt_income'] = opt_income
     
+    # metrics = {k: float(v) for k, v in metrics.items()}
     
     print(f"Extract_metric: {metrics}")
 
 
 # --- Execution ----
 try:
-    # df = load_income_statement("2024q1_income.xlsx")
+    df = load_income_statement("2024q1_income.xlsx")
         # Basic validation before accessing numbers
         #print(df.head(10))      # Check: Does the top look like a clean table
         #print(df.dtypes)        # Check: Actual Ammount now a number/float instead of an object
-        #print(df.isna().sum())  # Are there any Nans
-    
-    # total_revenue = df.loc["Total Operating Revenue", "Actual Amount"]
-        #total_revenue = df.loc["Actual Amount", "Total Operating Revenue"]
-    # print(f"Printing total_revenue - {total_revenue}")
-    
-    extract_metic()
-    
+        #print(df.isna().sum())  # Are there any Nans    
 except Exception as e:
     print(e)
     
+extract_metic(df)
 
+#find_value(df, METRIC_MAP['total_revenue'])
