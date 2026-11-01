@@ -79,17 +79,11 @@ def extract_metic(df):
     
     
     # 2. Extract & simple math
-    total_revenue = find_value(df, METRIC_MAP['total_revenue'])
-    total_opt_cost = find_value(df, METRIC_MAP['total_opt_cost'])
-    gross_profit = find_value(df, METRIC_MAP['gross_profit'])
-    total_opt_expense = find_value(df, METRIC_MAP['total_opt_exp'])
-    opt_income = gross_profit - total_opt_expense
-    
-    metrics['total_revenue'] = total_revenue
-    metrics['total_opt_cost'] = total_opt_cost
-    metrics['gross_porofit'] = gross_profit
-    metrics['total_opt_expense'] = total_opt_expense
-    metrics['opt_income'] = opt_income
+    metrics['total_revenue'] = find_value(df, METRIC_MAP['total_revenue'])
+    metrics['total_opt_cost'] = find_value(df, METRIC_MAP['total_opt_cost'])
+    metrics['gross_porofit'] = find_value(df, METRIC_MAP['gross_profit'])
+    metrics['total_opt_expense'] = find_value(df, METRIC_MAP['total_opt_exp'])
+    metrics['opt_income'] = metrics['gross_porofit'] - metrics['total_opt_expense']
     
     # metrics = {k: float(v) for k, v in metrics.items()}
     
