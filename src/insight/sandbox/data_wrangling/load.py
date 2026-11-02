@@ -22,7 +22,8 @@ METRIC_MAP = {
         'total_revenue': ['Total Operating Revenue', 'Revenue', 'Net Sales'],
         'total_opt_cost': ['Total Operating Costs', 'Operating Cost'],
         'gross_profit':   ['Gross Profit', 'Total Gross Profit'],
-        'total_opt_exp':  ['Total Operating Expenses', 'Operating Expense']
+        'total_opt_exp':  ['Total Operating Expenses', 'Operating Expense'],
+        'net_income' : ['Net Income', 'Pre-tax Profit (Loss)']
     }
 
 
@@ -45,10 +46,12 @@ def load_income_statement(file_name) -> pd.DataFrame:
     return df
 
 
-def find_value(df, metric_map) -> float:
-    for name in metric_map:
+def find_value(df, key) -> float:
+    for name in METRIC_MAP[key]:
         if name in df.index:
             return float(df.loc[name, "Actual Amount"])
+    
+    print(f"Table does not contain the name in {key}")
     return 0.0
 
 
@@ -79,11 +82,13 @@ def extract_metic(df):
     
     
     # 2. Extract & simple math
-    metrics['total_revenue'] = find_value(df, METRIC_MAP['total_revenue'])
-    metrics['total_opt_cost'] = find_value(df, METRIC_MAP['total_opt_cost'])
-    metrics['gross_porofit'] = find_value(df, METRIC_MAP['gross_profit'])
-    metrics['total_opt_expense'] = find_value(df, METRIC_MAP['total_opt_exp'])
+    metrics['total_revenue'] = find_value(df, 'total_revenue')
+    metrics['total_opt_cost'] = find_value(df, 'total_opt_cost')
+    metrics['gross_porofit'] = find_value(df, 'gross_profit')
+    metrics['total_opt_expense'] = find_value(df, 'total_opt_exp')
     metrics['opt_income'] = metrics['gross_porofit'] - metrics['total_opt_expense']
+    metrics['net_income'] = find_value(df, 'net_income')
+    metrics['net_profit_margin'] = metrics['net_income'] / metrics['total_revenue']
     
     # metrics = {k: float(v) for k, v in metrics.items()}
     
