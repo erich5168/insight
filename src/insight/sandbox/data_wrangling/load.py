@@ -45,11 +45,25 @@ def load_income_statement(file_name) -> pd.DataFrame:
     
     return df
 
-
+# Find value through loop (Slow)
 def find_value(df, key) -> float:
     for name in METRIC_MAP[key]:
         if name in df.index:
             return float(df.loc[name, "Actual Amount"])
+    
+    print(f"Table does not contain the name in {key}")
+    return 0.0
+
+# Find value through Pandas' Set Logic
+def find_value_index(df: pd.DataFrame, key: str) -> float:
+    aliases = METRIC_MAP.get(key,[])
+    print(f"Print what aliases contain{aliases}")
+    common = df.index.intersection(aliases)
+    
+    print(f"Print what is common: {common}")
+    
+    if not common.empty:
+        return float(df.loc[common[0], "Actual Amount"])
     
     print(f"Table does not contain the name in {key}")
     return 0.0
@@ -105,6 +119,8 @@ try:
 except Exception as e:
     print(e)
     
-extract_metic(df)
+# extract_metic(df)
+
+find_value_index(df, 'net_income')
 
 #find_value(df, METRIC_MAP['total_revenue'])
