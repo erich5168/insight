@@ -17,12 +17,13 @@ test_data = {
     "Actual Amount": ["$1,200.50", "(500.00)", "10,000", "N/A", "", np.nan, "$1.2M"],
     "Budgeted Amount": ["$2,000", "100", "(1,000.00)", "TBD", "0", np.nan, "Unknown"]
 }
-df_test = pd.DataFrame(test_data)
 
 
-# Sanitize data
-def sanitize_financial_numbers(df: pd.DataFrame, col_name: str) -> pd.DataFrame:
-    
+# Clean only 
+# $(dollar sign), 
+# ',' (comma between numbers ex: 1,000)
+# ' ' emply space
+def clean_num_column(df: pd.DataFrame, col_name: str) -> pd.DataFrame:
     if col_name in df.columns:
         df[col_name] = (
             df[col_name]
@@ -32,9 +33,23 @@ def sanitize_financial_numbers(df: pd.DataFrame, col_name: str) -> pd.DataFrame:
             .pipe(pd.to_numeric, errors='coerce')          # .pipe() pass clean string directly into `pd.to_numeric` converts entire column to float64.
         )
     return df
+    
 
+# Sanitize data
+def sanitize_financial_numbers(df: pd.DataFrame, col_name: str) -> pd.DataFrame:
+    
+    df_test = pd.DataFrame(test_data)
+    
+    # Orchestration Layer - 2 methods with different level of sanitization....
+    # Standard sanitization
+    # clean_num_column(df_test, "Actual Amount")
+    
+    # Magnitude Handler {'K': 1e3, 'M': 1e6, 'B': 1e9}
+    
+    print(f"Original df: {df_test}") 
+    
+    return None
 
-print(df_test)
 
 # 2. Run the cleaning function
 df_cleaned = sanitize_financial_numbers(df_test.copy(), "Actual Amount")
