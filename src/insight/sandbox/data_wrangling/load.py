@@ -34,10 +34,10 @@ def sanitize_financial_value(df: pd.DataFrame, col_name: str) -> pd.DataFrame:
     if col_name in df.columns:
         df[col_name] = (
             df[col_name]
-            .astype(str)
-            .str.replace(r'[$,]', '', regex=True) 
-            .str.replace(r'\((.*?)\)', r'-\1', regex=True)
-            .pipe(pd.to_numeric, errors='coerce')
+            .astype(str)                                   # Convert to string
+            .str.replace(r'[$,]', '', regex=True)          # Find $ sign or , comma replace with nothing
+            .str.replace(r'\((.*?)\)', r'-\1', regex=True) # Handles (100) -> -100 across whole column
+            .pipe(pd.to_numeric, errors='coerce')          # .pipe() pass clean string directly into `pd.to_numeric` converts entire column to float64.
         )
     return df
     
@@ -76,13 +76,16 @@ def find_value(df, key) -> float:
 
 # Find value through Pandas' Set Logic
 def find_value_index(df: pd.DataFrame, key: str) -> float:
+    
+    df_copy = df.copy()
+    
     aliases = METRIC_MAP.get(key,[])
     #print(f"LOG: Print what aliases contain{aliases}")
-    common = df.index.intersection(aliases)
+    common = df_copy.index.intersection(aliases)
     #print(f"LOG: Print what is common: {common}")
     
     if not common.empty:
-        return float(df.loc[common[0], "Actual Amount"])
+        return float(df_copy.loc[common[0], "Actual Amount"])
     
     print(f"Table does not contain the name in {key}")
     return 0.0
