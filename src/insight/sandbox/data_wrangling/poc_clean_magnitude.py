@@ -46,10 +46,11 @@ def parse_magnitude(val):
     if pd.isna(val) or val == "" : return np.nan
     
     # 2. Clean and strip cell replace $ with ''(empty string)
+    # [float] -> [str]
     clean_str =  str(val).replace('$', '').replace(',', '').strip().upper()
     
     # 3. Handle accounting negative (parentheses) and standard numbers   
-    if "(" in clean_str and ")" in clean_str:
+    if clean_str.startswith("(") and clean_str.endswith(")"):
         clean_str = "-" + clean_str.replace("(", "").replace(")", "")
 
     # 4. Check if the last character is a known multiplier
@@ -58,7 +59,7 @@ def parse_magnitude(val):
     print(f"Print the last character{clean_str[-1]}")
     if clean_str[-1] in multipliers:
         unit = clean_str[-1]
-        number_part = float(clean_str[:-1])    # Everything except the last character
+        number_part = pd.to_numeric(clean_str[:-1], errors='coerce')    # Everything except the last character [  ]
         
         clean_str = number_part * multipliers[unit]
 
