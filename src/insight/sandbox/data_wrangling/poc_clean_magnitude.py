@@ -19,6 +19,12 @@ test_data = {
 }
 
 
+df = pd.DataFrame(test_data)
+
+df_copy = df.copy()    
+  
+print(f"Original df: {df_copy}") 
+
 # Clean only 
 # $(dollar sign), 
 # ',' (comma between numbers ex: 1,000)
@@ -33,26 +39,83 @@ def clean_num_column(df: pd.DataFrame, col_name: str) -> pd.DataFrame:
             .pipe(pd.to_numeric, errors='coerce')          # .pipe() pass clean string directly into `pd.to_numeric` converts entire column to float64.
         )
     return df
-    
 
+def parse_magnitude(val):    
+    
+    # 1. If field is empty return with np.nan.  We do this 1st so we don't wast compute power.
+    if pd.isna(val) or val == "" : return np.nan
+    
+    # 2. Clean and strip cell replace $ with ''(empty string)
+    clean_str =  str(val).replace('$', '').replace(',', '').strip().upper()
+    
+    # 3. Handle accounting negative (parentheses) and standard numbers   
+    if "(" in clean_str and ")" in clean_str:
+        clean_str = "-" + clean_str.replace("(", "").replace(")", "")
+
+    # 4. Check if the last character is a known multiplier
+    multipliers = {'K': 1e3, 'M': 1e6, 'B': 1e9}
+
+    print(f"Print the last character{clean_str[-1]}")
+    if clean_str[-1] in multipliers:
+        unit = clean_str[-1]
+        number_part = float(clean_str[:-1])    # Everything except the last character
+        
+        clean_str = number_part * multipliers[unit]
+
+    return clean_str
+
+
+def parse_magnitude_ai(val):
+    if pd.isna(val) or val == "": return np.nan
+    
+    # Clean basic symbols first
+    clean_str = str(val).replace('$', '').replace(',', '').strip().upper()
+    
+    # Magnitude Map
+    multipliers = {'K': 1e3, 'M': 1e6, 'B': 1e9}
+    
+    # Check if the last character is a known multiplier
+    if clean_str[-1] in multipliers:
+        unit = clean_str[-1]
+        number_part = clean_str[:-1] # Everything except the last char
+        try:
+            return float(number_part) * multipliers[unit]
+        except ValueError:
+            return np.nan
+            
+    # Handle accounting negatives (parentheses) and standard numbers
+    if clean_str.startswith('(') and clean_str.endswith(')'):
+        clean_str = '-' + clean_str[1:-1]
+    
+    return pd.to_numeric(clean_str, errors='coerce')
+    
+    
 # Sanitize data
 def sanitize_financial_numbers(df: pd.DataFrame, col_name: str) -> pd.DataFrame:
-    
-    df_test = pd.DataFrame(test_data)
-    
     # Orchestration Layer - 2 methods with different level of sanitization....
-    # Standard sanitization
-    # clean_num_column(df_test, "Actual Amount")
     
     # Magnitude Handler {'K': 1e3, 'M': 1e6, 'B': 1e9}
     
-    print(f"Original df: {df_test}") 
+    # Connect to parse_magnitude : it only takes one value
+    df_copy[col_name] = df_copy[col_name].apply(parse_magnitude)
     
-    return None
+    # Standard sanitization
+    # return clean_num_column(df_copy, "Actual Amount")
 
 
 # 2. Run the cleaning function
-df_cleaned = sanitize_financial_numbers(df_test.copy(), "Actual Amount")
-df_cleaned = sanitize_financial_numbers(df_cleaned, "Budgeted Amount")
+# df_cleaned = sanitize_financial_numbers(df_copy, "Actual Amount")
+# df_cleaned = sanitize_financial_numbers(df_cleaned, "Budgeted Amount")
 
-print(df_cleaned)
+# print(df_cleaned)
+
+sanitize_financial_numbers(df_copy, "Actual Amount")
+
+print(f"After cleaning {df_copy}")
+print('--------')
+print(f"Data type {df_copy.dtypes}")
+actual_col_val = df_copy.loc[6, "Actual Amount"]
+print(f"ROW 2, Actual Amount: {actual_col_val}")
+print(type(actual_col_val))
+print('--------')
+print(f"Data type {df_copy.isna().sum()}")
