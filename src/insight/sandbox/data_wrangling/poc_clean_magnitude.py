@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 
 """
+POC - Proof of Concept
+
 # Name: test_sanitize_scale_handler.py
 Test sanitize_financial_numbers() function:
 - Make sure this piece of code works.  Because current data show Panda automatically sanitized the data
@@ -40,6 +42,9 @@ def clean_num_column(df: pd.DataFrame, col_name: str) -> pd.DataFrame:
         )
     return df
 
+# Original: `float(clean_str[-1])`
+# Suggests:  use pd.to_numeric(clean_str[:-1], ...)
+# Its much cleaner this way because if clean_str was a string and not a number it will crash
 def parse_magnitude(val):    
     
     # 1. If field is empty return with np.nan.  We do this 1st so we don't wast compute power.
@@ -65,7 +70,9 @@ def parse_magnitude(val):
 
     return clean_str
 
-
+# Original: `float(clean_str[-1])`
+# Suggest: try() catch().  If clean_str is 'TBD', '$1,200'...etc. it will crash
+# Use try() as a safeguard. Prefer pd.to_numeric 
 def parse_magnitude_ai(val):
     if pd.isna(val) or val == "": return np.nan
     
@@ -114,9 +121,11 @@ sanitize_financial_numbers(df_copy, "Actual Amount")
 
 print(f"After cleaning {df_copy}")
 print('--------')
-print(f"Data type {df_copy.dtypes}")
-actual_col_val = df_copy.loc[6, "Actual Amount"]
-print(f"ROW 2, Actual Amount: {actual_col_val}")
-print(type(actual_col_val))
-print('--------')
-print(f"Data type {df_copy.isna().sum()}")
+print(f"Only printing column:")
+print(f"{df_copy["Actual Amount"]}")
+# print(f"Data type {df_copy.dtypes}")
+# actual_col_val = df_copy.loc[6, "Actual Amount"]
+# print(f"ROW 2, Actual Amount: {actual_col_val}")
+# print(type(actual_col_val))
+# print('--------')
+# print(f"Data type {df_copy.isna().sum()}")
