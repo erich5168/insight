@@ -1,0 +1,27 @@
+Category,Amount,%,Category,Amount,%
+Current Assets (流動資產),,,Current Liabilities ( 流動負債 ),,
+Cash and Bank Deposits,"103,413,985",2.8%,Short-term Borrowings,"1,577,471,000",42.6%
+Short-term Notes/Securities,0,0.0%,Commercial Paper Payable,"270,000,000",7.3%
+Accounts Receivable,"44,048,871",1.2%,Notes Payable,0,0.0%
+Other Receivables,"22,162,710",0.6%,Accounts Payable,"230,689,428",6.2%
+Prepayments,"9,370,235",0.3%,Accrued Expenses,"17,825,064",0.5%
+Other Current Assets,"14,160,390",0.4%,Interest Payable,"1,633,893",0.0%
+Other Current Liabilities (misplaced in asset col),0,0.0%,Other Current Liabilities,"2,379,819",0.1%
+Total Current Assets (流動資產合計),"193,156,191",5.2%,Total Current Liab. (流動負債合計),"2,099,999,204",56.8%
+Investments(投資),,,Long-term Liab. (長期負債),,
+Long-term Investments,"1,715,861,326",46.4%,Long-term Loans & Bonds,"597,618,787",16.2%
+Fixed Assets ( 固定資產 ),,,Other Liabilities (其他負債),,
+Solar Equipment,"1,417,029,355",38.3%,Deposits Received,"1,834,620",0.0%
+Less: Accum. Depreciation,"(64,011,787)",(1.7%),Deferred Tax Liabilities,0,0.0%
+Charging Piles,"15,889,386",0.4%,Lease Liabilities,"103,324,824",2.8%
+Less: Accum. Depreciation,"(2,581,689)",(0.1%),Total Other Liab. ( 其他負債合計 ),"105,159,444",2.8%
+Leasehold Improvements,"4,570,027",0.1%,Shareholders' Equity (股東權益),,
+Less: Accum. Depreciation,"(117,180)",0.0%,Share Capital,"1,000,000,000",27.0%
+Right-of-use Assets,"118,559,360",3.2%,Legal Reserve,0,0.0%
+Less: Accum. Depreciation,"(5,255,298)",(0.1%),Capital Surplus,"79,092",0.0%
+Prepaid Construction Costs,"295,238,843",8.0%,Special Reserve,0,0.0%
+Total Fixed Assets ( 固定資產合計 ),"1,779,321,017",48.1%,Currency Translation Adj.,0,0.0%
+Other Assets ( 其他資產 ),,,Accum. Profit/Loss,"(83,942,934)",(2.3%)
+Refundable Deposits,"11,473,345",0.3%,Net Income (Current),"(19,101,714)",(0.5%)
+Total Other Assets (其他資產合計),"11,473,345",0.3%,Total Equity ( 股東權益總計 ),"897,034,444",24.2%
+TOTAL ASSETS ( 資產總計 ),"3,699,811,879",100%,TOTAL LIAB & EQUITY (負債及股東權益總計),"3,699,811,879",100%
