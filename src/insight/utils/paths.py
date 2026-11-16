@@ -5,7 +5,8 @@ from pathlib import Path
 # Sentinel File Approach.
 
 # Finde the project root until you find `pyproject.toml` or `uv.lock` file
-# - This way no matter where you are in the project folder it will always find ROOT
+# - Always find root path
+# - By going up layer by layer
 
 def get_project_root() -> Path:
     

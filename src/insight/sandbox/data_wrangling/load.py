@@ -4,20 +4,18 @@ from insight.utils.paths import get_project_root
 
 # EXECUTE: uv run python src/insight/sandbox/data_wrangling/load.py    
 
-# 1. Get the absolute path of the current file
+# Get the absolute path of the current file
 current_file = Path(__file__).resolve()
 
-# 2. Get to the Project Root
+# Return project root path
 PROJECT_ROOT = get_project_root()
 
-
-# 3. Construct path of your data folder
+# Construct path of your data folder
 DATA_FOLDER = PROJECT_ROOT / "data" / "processed"
 FILE_BAL = DATA_FOLDER / "2024Q1_balance.xlsx"
 FILE_INC = DATA_FOLDER / "2024q1_income.xlsx"
 
-
-# 4. Define Mapping : Business Key -> List of possible label
+# Define Business Column Mapping : Business Key -> List of possible label
 METRIC_MAP = {
         'total_revenue': ['Total Operating Revenue', 'Revenue', 'Net Sales'],
         'total_opt_cost': ['Total Operating Costs', 'Operating Cost'],
@@ -26,7 +24,11 @@ METRIC_MAP = {
         'net_income' : ['Net Income', 'Pre-tax Profit (Loss)']
     }
 
-# Sanitization layer - Making sure data is clean when imported.
+
+
+#-- Business Logic --#
+
+# Sanitization layer (Vectorization) - Making sure data is clean when imported. 
 # Make sure there are no empty spaces, $, in the numbers
 # Convert () to -(negative)
 def sanitize_financial_value(df: pd.DataFrame, col_name: str) -> pd.DataFrame:
@@ -65,24 +67,34 @@ def load_income_statement(file_name) -> pd.DataFrame:
     
     return df
 
-# Find value through loop (Slow)
+# (Slow) Find value looping column name
 def find_value(df, key) -> float:
+    # Each name in METRIC_MAP under this `key`
     for name in METRIC_MAP[key]:
+        # If name is in column
         if name in df.index:
+            # Return value as float
             return float(df.loc[name, "Actual Amount"])
     
+    # Else
     print(f"Table does not contain the name in {key}")
     return 0.0
 
-# Find value through Pandas' Set Logic
+
+# (Fast) Find value through Pandas' Set Logic (Vectorized Index Intersection)
 def find_value_index(df: pd.DataFrame, key: str) -> float:
+    # print(f"The key: {key}") : total_revenue
     
     df_copy = df.copy()
     
     aliases = METRIC_MAP.get(key,[])
-    #print(f"LOG: Print what aliases contain{aliases}")
+    #print(f"LOG: Print what aliases contain{aliases}") 
+    # : ['Total Operating Revenue', 'Revenue', 'Net Sales']
+    
     common = df_copy.index.intersection(aliases)
-    #print(f"LOG: Print what is common: {common}")
+    # This is significantly faster than loops
+    #print(f"LOG: Print what is common: {common}") 
+    # : Index(['Total Operating Revenue'], dtype='str', name='English Description')
     
     if not common.empty:
         return float(df_copy.loc[common[0], "Actual Amount"])
@@ -115,7 +127,6 @@ def extract_financial_metic(df):
     
     # 1. Converty the entire column to numeric
     #df["Actual Amount"] = pd.to_numeric(df["Actual Amount"], errors='coerce')
-    
     
     # 2. Extract & simple math
     metrics['total_revenue'] = find_value_index(df, 'total_revenue')
