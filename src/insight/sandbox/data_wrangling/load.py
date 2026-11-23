@@ -102,15 +102,15 @@ def find_value_index(df: pd.DataFrame, key: str) -> float:
     print(f"Table does not contain the name in {key}")
     return 0.0
 
-
-# 1. Leverage & Solvency
+#============= Extract ===========#
+# 2. Leverage & Solvency
 # Debtg-to-Equity Ratio
 # Debt Ratio = Liabilities / Asset
 
-# Equity Growthf
+# Equity Growth
 
 
-# 2. Liquidity
+# 3. Liquidity
 # Current Ratio = Asets / Liabilities
 # Quick Ratio = (Assets - Inventory) / Liabilities
 
@@ -121,9 +121,10 @@ def find_value_index(df: pd.DataFrame, key: str) -> float:
 # Cash + Cash Equivalents / 
 # ( Quarter Operating Expenses / 3)
 
+# 1. Init global variable
+metrics = {}
+
 def extract_financial_metic(df):
-        
-    metrics = {}
     
     # 1. Converty the entire column to numeric
     #df["Actual Amount"] = pd.to_numeric(df["Actual Amount"], errors='coerce')
@@ -138,15 +139,18 @@ def extract_financial_metic(df):
     metrics['net_profit_margin'] = metrics['net_income'] / metrics['total_revenue']
     
     # metrics = {k: float(v) for k, v in metrics.items()}
-    
     print(f"Extract_metric: {metrics}")
+
+
+
+
 
 
 # --- Execution ----
 try:
     df = load_income_statement("2024q1_income.xlsx")
         # Basic validation before accessing numbers
-        # print(df.head(10))      # Check: Does the top look like a clean table
+    print(df.head(10))      # Check: Does the top look like a clean table
         # print(df.tail(10))
         #print(df.dtypes)        # Check: Actual Ammount now a number/float instead of an object
         #print(df.isna().sum())  # Are there any Nans    
