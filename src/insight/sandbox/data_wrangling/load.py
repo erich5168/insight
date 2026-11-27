@@ -28,7 +28,7 @@ METRIC_MAP = {
 
 #-- Business Logic --#
 
-# Sanitization layer (Vectorization) - Making sure data is clean when imported. 
+# 2. Sanitization layer (Vectorization) - Making sure data is clean when imported. 
 # Make sure there are no empty spaces, $, in the numbers
 # Convert () to -(negative)
 def sanitize_financial_value(df: pd.DataFrame, col_name: str) -> pd.DataFrame:
@@ -43,7 +43,7 @@ def sanitize_financial_value(df: pd.DataFrame, col_name: str) -> pd.DataFrame:
         )
     return df
     
-
+# 1. Load raw data -> sanitize data
 def load_income_statement(file_name) -> pd.DataFrame:
     
     target_path = DATA_FOLDER / file_name
@@ -67,6 +67,7 @@ def load_income_statement(file_name) -> pd.DataFrame:
     
     return df
 
+# 3. From the clean DF find value
 # (Slow) Find value looping column name
 def find_value(df, key) -> float:
     # Each name in METRIC_MAP under this `key`
@@ -80,7 +81,7 @@ def find_value(df, key) -> float:
     print(f"Table does not contain the name in {key}")
     return 0.0
 
-
+# 3. From the clean DF find value
 # (Fast) Find value through Pandas' Set Logic (Vectorized Index Intersection)
 def find_value_index(df: pd.DataFrame, key: str) -> float:
     # print(f"The key: {key}") : total_revenue
@@ -102,28 +103,10 @@ def find_value_index(df: pd.DataFrame, key: str) -> float:
     print(f"Table does not contain the name in {key}")
     return 0.0
 
-#============= Extract ===========#
-# 2. Leverage & Solvency
-# Debtg-to-Equity Ratio
-# Debt Ratio = Liabilities / Asset
 
-# Equity Growth
-
-
-# 3. Liquidity
-# Current Ratio = Asets / Liabilities
-# Quick Ratio = (Assets - Inventory) / Liabilities
-
-# Cash Buffer (in months) =
-# Cash + Cash Equivalents / Average Monthly Operating Expenses
-
-# Cash Buffer (in months) =
-# Cash + Cash Equivalents / 
-# ( Quarter Operating Expenses / 3)
-
-# 1. Init global variable
+# A. Init global variable
 metrics = {}
-
+# A.1 Load value into `metrics` global variable
 def extract_financial_metic(df):
     
     # 1. Converty the entire column to numeric
